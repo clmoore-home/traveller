@@ -1,0 +1,9 @@
+"""
+Design notes for the traveller automated planet decoder.
+
+A user will be able to enter any planet code from a sector map and retrieve all the information contained in the code about
+tech level, law levels etc. The input is the planet code, plus options for the little pictures and the initial code e.g. A-C.
+
+This app will use a GUI interface - tkinter?
+
+"""
