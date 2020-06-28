@@ -44,23 +44,32 @@ class Application(tk.Tk):
         self.make_widgets()
 
     def make_widgets(self):
-        entry_frame = self.main_entry()
-        decode_frame = self.button_frame()
-        entry_frame.pack()
-        decode_frame.pack()
-        self.make_text_box()
-
-    def make_text_box(self):
-        self.text_display = tkst.ScrolledText()
-        self.text_display.pack()
-
-    def main_entry(self):
-        tk.Label(text="Enter Planet Code:").pack(padx=5, pady=5)
-        entry_frame = tk.Frame()
-        self.entry = tk.Entry(master=entry_frame)
-        self.entry.pack()
+        # self.code_entry_frame, self.entry = self.default_entry_box(label='Enter Planet Code:')
+        self.code_entry_frame, self.entry = self.default_frame(label='Enter Planet Code:', WidgetName='Entry')
+        self.code_entry_frame.grid(row=1, column=1, columnspan=5)
         self.entry.bind('<Key-Return>', self.handle_decode_request)
-        return entry_frame
+        decode_frame = self.button_frame()
+        decode_frame.grid(row=2, column=1, columnspan=5)
+        # self.geoframe, self.geography_text = self.default_text_box('Geography')
+        self.geoframe, self.geography_text = self.default_frame(label='Geography', WidgetName='ScrolledText')
+        self.geoframe.grid(row=3, column=1, columnspan=2)
+        # self.socframe, self.society_text = self.default_text_box('Society')
+        self.socframe, self.society_text = self.default_frame(label='Society', WidgetName='ScrolledText')
+        self.socframe.grid(row=3, column=3, columnspan=2)
+        self.planet_name_frame, self.planet_name_entry = self.default_frame(label='Planet Name', WidgetName='Entry')
+        self.planet_name_frame.grid(row=1, column=1, columnspan=2)
+
+    def default_frame(self, label=None, WidgetName=None):
+        frame = tk.Frame()
+        if label:
+            tk.Label(text=label, master=frame).pack()
+        if WidgetName:
+            try:
+                pack_object = getattr(tk, WidgetName)(master=frame)
+            except AttributeError:
+                pack_object = getattr(tkst, WidgetName)(master=frame)
+            pack_object.pack()
+        return frame, pack_object
 
     def button_frame(self):
         frame = tk.Frame()
@@ -82,34 +91,41 @@ class Application(tk.Tk):
         btn_clear = self.make_default_btn('Clear', frame)
         btn_clear.bind('<Button-1>', self.handle_clear_request)
 
-    def insert_information_block(self, *info_block):
+    def insert_information_block(self, text_box, *info_block):
         """Inserts a block of information into the text_display based on info tuple"""
-        self.text_display.insert(tk.END, '\n'.join(info_block))
-        self.text_display.insert(tk.END, '\n\n')
+        text_box.insert(tk.END, '\n'.join(info_block))
+        text_box.insert(tk.END, '\n\n')
+
+    def set_textbox_states(self, *text_boxes, state='normal', fg='black', clear=False):
+        """Sets the input textboxes to input states"""
+        for tb in text_boxes:
+            tb.config(state=state, fg=fg)
+            if clear:
+                try:
+                    tb.delete(1.0, tk.END)
+                except tk.TclError:
+                    pass
 
     def handle_decode_request(self, event):
-        self.text_display.config(state='normal')
-        try:
-            self.text_display.delete(1.0, tk.END)
-        except tk.TclError:
-            pass
-        self.validate_decode_input()
+        self.set_textbox_states(self.geography_text, self.society_text, clear=True)
         p = Planet(self.entry.get())
-        self.insert_information_block(f'Starport Rating {p.starport_rating}', p.starport_info)
-        self.insert_information_block(f'Size Rating {p.size}', p.planet_size_info)
-        self.insert_information_block(f'Atmospheric Rating {p.atmosphere}', p.atmosphere_info)
-        self.insert_information_block(f'Hydrographics Rating {p.waterpercent}', p.hydrographic_info)
-        self.insert_information_block(f'Population: {p.population_info}')
-        self.insert_information_block(f'Goverment Rating {p.govtype}', p.government_info)
-        self.text_display.insert(tk.END, f'Law Level: {p.lawlevel}\n')
-        self.insert_information_block(f'Restricted Weapons:', p.lawlevel_info_weapons.restricted, 'Permitted Weapons:', p.lawlevel_info_weapons.allowed)
-        self.insert_information_block(f'Restricted Armour:', p.lawlevel_info_armour.restricted, f'Permitted Armour:', p.lawlevel_info_armour.allowed)
-        self.insert_information_block(f'Technology Level: {p.techlevel}')
-        self.text_display.config(state='disabled')
-    
+        self.insert_information_block(self.geography_text, f'Starport Rating {p.starport_rating}', p.starport_info)
+        self.insert_information_block(self.geography_text, f'Size Rating {p.size}', p.planet_size_info)
+        self.insert_information_block(self.geography_text, f'Atmospheric Rating {p.atmosphere}', p.atmosphere_info)
+        self.insert_information_block(self.geography_text, f'Hydrographics Rating {p.waterpercent}', p.hydrographic_info)
+        self.insert_information_block(self.geography_text, f'Population: {p.population_info}')
+        self.insert_information_block(self.society_text, f'Goverment Rating {p.govtype}', p.government_info)
+        self.insert_information_block(self.society_text, f'Law Level: {p.lawlevel}', 
+            'Restricted Weapons:', p.lawlevel_info_weapons.restricted, 
+            'Permitted Weapons:', p.lawlevel_info_weapons.allowed)
+        self.insert_information_block(self.society_text, f'Restricted Armour:', p.lawlevel_info_armour.restricted, f'Permitted Armour:', p.lawlevel_info_armour.allowed)
+        self.insert_information_block(self.society_text, f'Technology Level: {p.techlevel}')
+        self.set_textbox_states(self.geography_text, self.society_text, state='disabled')
+        
     def validate_decode_input(self):
         if len(self.entry.get()) != 10:
-            self.insert_information_block(f'Warning: Code entered should be 10 \ncharacters long. Check for entry error.' )
+            self.text_display['fg'] = 'red'
+            self.text_display.insert(tk.END, f'Warning: Code entered should be 10 \ncharacters long. Check for entry error.')
             self.text_display.config(state='disabled')
 
     def handle_clear_request(self, event):

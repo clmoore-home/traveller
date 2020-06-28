@@ -2,6 +2,7 @@ from collections import namedtuple
 from dataclasses import dataclass, field
 
 import data
+import textwrap
 
 @dataclass
 class Planet:
@@ -89,7 +90,7 @@ class Planet:
             return info('Nothing permitted', 'All')
         restricted = [i[index] for i in data.law[:self.numerical_codepoint(self.lawlevel)]]
         allowed = [i[index] for i in data.law[self.numerical_codepoint(self.lawlevel):] if i[index]]
-        return info('; '.join(restricted), '; '.join(allowed))
+        return info(textwrap.fill('; '.join(restricted), width=65), textwrap.fill('; '.join(allowed), width=65))
 
     @property
     def lawlevel_info_weapons(self):

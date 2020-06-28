@@ -140,28 +140,93 @@ hydrography = (
 
 def government_variables(gtype, description, examples, contraband):
     """Formatting for input args"""
-    return [f'Government Type: {gtype}', f'Description: {textwrap.fill(description)}', 
-        f'Example(s): {examples}', f'Common contraband: {contraband}']
+    return [f'Government Type: {gtype}', f'Description: {textwrap.fill(description, width=65)}', 
+        f'Example(s): {textwrap.fill(examples, width=65)}', f'Common contraband: {textwrap.fill(contraband, width=65)}']
 
 government = [
     government_variables('None', 'No government structure. In many cases, family bonds predominate', 'Family, Clan, Anarchy', 'None'),
     government_variables('Company/Corporation', 
         """Ruling functions are assumed by a company managerial elite, and most citizenry are company employees or dependants""",
         """Corporate outpost, asteroid mine, feudal domain""", 'Weapons, Drugs, Travellers'),
-    government_variables('Participating democracy', 'TBD', 'TBD', 'TBD'),
-    government_variables('Self-perpetuating oligarchy', 'TBD', 'TBD', 'TBD'),
-    government_variables('Representative democracy', 'TBD', 'TBD', 'TBD'),
-    government_variables('Feudal technocracy', 'TBD', 'TBD', 'TBD'),
-    government_variables('Captive government', 'TBD', 'TBD', 'TBD'),
-    government_variables('Balkanisation', 'TBD', 'TBD', 'TBD'),
-    government_variables('Civil service bureaucracy', 'TBD', 'TBD', 'TBD'),
-    government_variables('Impersonal bureacracy', 'TBD', 'TBD', 'TBD'),
-    government_variables('Charismatic dictator', 'TBD', 'TBD', 'TBD'),
-    government_variables('Non-charismatic leader', 'TBD', 'TBD', 'TBD'),
-    government_variables('Charismatic oligarchy', 'TBD', 'TBD', 'TBD'),
-    government_variables('Religious dictatorship', 'TBD', 'TBD', 'TBD'),
-    government_variables('Religious autocracy', 'TBD', 'TBD', 'TBD'),
-    government_variables('Totalitarian oligarchy', 'TBD', 'TBD', 'TBD')    
+    government_variables('Participating democracy', 'Ruling functions are reached by the advice and consent of the citizenry directly', """Collective, tribal
+council, commlinked
+consensus""", 'Drugs'),
+    government_variables('Self-perpetuating oligarchy', """Ruling functions are performed by a
+restricted minority, with little or no input
+from the mass of citizenry""", """Plutocracy,
+hereditary ruling
+caste""", """Technology,
+Weapons,
+Travellers"""),
+    government_variables('Representative democracy', """Ruling functions are performed by elected
+representatives""", """Republic,
+democracy""", """Drugs, Weapons,
+Psionics"""),
+    government_variables('Feudal technocracy', """Ruling functions are performed by specific
+individuals for persons who agree to be
+ruled by them. Relationships are based
+on the performance of technical activities
+which are mutually beneficial""", """Those with
+access to higher
+technology tend to
+have higher social
+status""", """Technology,
+Weapons,
+Computers"""),
+    government_variables('Captive government', """Ruling functions are performed by an
+imposed leadership answerable to an
+outside group""", """A colony or
+conquered area""", """Weapons,
+Technology,
+Travellers"""),
+    government_variables('Balkanisation', """No central authority exists; rival
+governments complete for control. Law
+level refers to the government nearest the
+starport""", """Multiple
+governments, civil
+war""", 'Varies'),
+    government_variables('Civil service bureaucracy', """Ruling functions are performed by
+government agencies employing
+individuals selected for their expertise""", """Technocracy,
+Communism""", 'Drugs, Weapons'),
+    government_variables('Impersonal bureacracy', """Ruling functions are performed by
+agencies which have become insulated
+from the governed citizens""", """Entrenched castes
+of bureaucrats,
+decaying empire""", """Technology,
+Weapons, Drugs,
+Travellers,
+Psionics"""),
+    government_variables('Charismatic dictator', """Ruling functions are performed by
+agencies directed by a single leader who
+enjoys the overwhelming confidence of the
+citizens""", """Revolutionary
+leader, messiah,
+emperor""", 'None'),
+    government_variables('Non-charismatic leader', """A previous charismatic dictator has been
+replaced by a leader through normal
+channels""", """Military
+dictatorship,
+hereditary kingship""", """Weapons,
+Technology,
+Computers"""),
+    government_variables('Charismatic oligarchy', """Ruling functions are performed by a select
+group of members of an organisation or
+class which enjoys the overwhelming
+confidence of the citizenry""", """Junta, revolutionary
+council""", 'Weapons'),
+    government_variables('Religious dictatorship', """Ruling functions are performed by a
+religious organisation without regard to the
+specific individual needs of the citizenry""", """Cult, transcendent
+philosophy, psionic
+group mind""", 'Varies'),
+    government_variables('Religious autocracy', """Government by a single religious leader
+having absolute power over the citizenry""", """Messiah""", 'Varies'),
+    government_variables('Totalitarian oligarchy', """Government by an all-powerful minority
+which maintains absolute control through
+widespread coercion and oppresion""", """World church,
+Ruthless
+corporation""", 'Varies')    
 ]
 
 law = [
