@@ -1,5 +1,6 @@
 import collections
 import tkinter as tk
+import tkinter.scrolledtext as tkst
 
 from planet import Planet
 
@@ -50,12 +51,8 @@ class Application(tk.Tk):
         self.make_text_box()
 
     def make_text_box(self):
-        s = tk.Scrollbar(self)
-        self.text_display = tk.Text(self, height=4, width=100)
-        self.text_display.pack(side=tk.LEFT, fill=tk.Y)
-        s.pack(side=tk.RIGHT, fill=tk.Y)
-        s.config(command=self.text_display.yview)
-        self.text_display.config(yscrollcommand=s.set)
+        self.text_display = tkst.ScrolledText()
+        self.text_display.pack()
 
     def main_entry(self):
         tk.Label(text="Enter Planet Code:").pack(padx=5, pady=5)
@@ -115,8 +112,6 @@ class Application(tk.Tk):
             self.insert_information_block(f'Warning: Code entered should be 10 \ncharacters long. Check for entry error.' )
             self.text_display.config(state='disabled')
 
-        
-    
     def handle_clear_request(self, event):
         self.entry.delete(0, tk.END)
 
