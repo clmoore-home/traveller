@@ -53,8 +53,9 @@ class Planet:
     
     @property
     def planet_size_info(self):
-        size_info = '\n'.join(data.size[self.size])
-        diameter = int(self.size) * 1600
+        size = self.numerical_codepoint(self.size)
+        size_info = '\n'.join(data.size[size])
+        diameter = size * 1600
         return f'Diameter: {str(diameter)}km\n{size_info}'
     
     @property
