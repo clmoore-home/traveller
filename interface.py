@@ -50,46 +50,41 @@ class Application(tk.Tk):
         self.entry.bind('<Key-Return>', self.handle_decode_request)
         decode_frame = self.button_frame()
         decode_frame.grid(row=2, column=1, columnspan=5)
-        # self.geoframe, self.geography_text = self.default_text_box('Geography')
         self.geoframe, self.geography_text = self.default_frame(label='Geography', WidgetName='ScrolledText')
         self.geoframe.grid(row=3, column=1, columnspan=2)
-        # self.socframe, self.society_text = self.default_text_box('Society')
         self.socframe, self.society_text = self.default_frame(label='Society', WidgetName='ScrolledText')
         self.socframe.grid(row=3, column=3, columnspan=2)
         self.planet_name_frame, self.planet_name_entry = self.default_frame(label='Planet Name', WidgetName='Entry')
         self.planet_name_frame.grid(row=1, column=1, columnspan=2)
+        # self.save_btn_frame, self.save_btn = self.default_frame(text='Save', WidgetName='Button')
+        # self.save_btn_frame.grid(row=1, column=5)
 
-    def default_frame(self, label=None, WidgetName=None):
-        frame = tk.Frame()
+    def default_frame(self, *, frame=None, label=None, text=None, WidgetName=None):
+        if not frame:
+            frame = tk.Frame()
         if label:
             tk.Label(text=label, master=frame).pack()
         if WidgetName:
-            try:
-                pack_object = getattr(tk, WidgetName)(master=frame)
-            except AttributeError:
-                pack_object = getattr(tkst, WidgetName)(master=frame)
+            pack_object = self.base_widget(frame, WidgetName, text=text)
             pack_object.pack()
         return frame, pack_object
+    
+    def base_widget(self, frame, WidgetName, text=None):
+        """Function to create a widget from input"""
+        try:
+            return getattr(tk, WidgetName)(master=frame, text=text)
+        except AttributeError:
+            return getattr(tkst, WidgetName)(master=frame, text=text)
 
     def button_frame(self):
-        frame = tk.Frame()
-        self.decode_btn(frame)
-        self.clear_btn(frame)
-        return frame
-    
-    def make_default_btn(self, text, frame, style=None):
-        button = tk.Button(text=text, master=frame)
-        button.pack(padx=5, pady=5)
-        return button
-
-    def decode_btn(self, frame):
-        btn_decode = self.make_default_btn('Decode', frame)
-        btn_decode.pack(side=tk.LEFT)
-        btn_decode.bind('<Button-1>', self.handle_decode_request)
-        
-    def clear_btn(self, frame):
-        btn_clear = self.make_default_btn('Clear', frame)
-        btn_clear.bind('<Button-1>', self.handle_clear_request)
+        btn_frame = tk.Frame()
+        decode = self.base_widget(btn_frame, 'Button', 'Decode')
+        decode.pack(side=tk.LEFT, padx=5, pady=5)
+        clear = self.base_widget(btn_frame, 'Button', 'Clear')
+        clear.pack(padx=5, pady=5)
+        decode.bind('<Button-1>', self.handle_decode_request)
+        clear.bind('<Button-1>', self.handle_clear_request)
+        return btn_frame
 
     def insert_information_block(self, text_box, *info_block):
         """Inserts a block of information into the text_display based on info tuple"""
