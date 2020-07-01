@@ -35,36 +35,25 @@ starport_facilities = {
         },
 }
 
-size = {
-    '0': ['Example(s): Asteroid, orbital complex',
+size = [
+    ['Example(s): Asteroid, orbital complex',
         'Surface Gravity (Gs): Negligible'],
-    '1': [
-        'Example(s): Triton',
+    ['Example(s): Triton',
         'Surface Gravity (Gs): 0.05'],
-    '2': [
-        'Example(s): Luna, Europa',
-        'Surface Gravity (Gs): 0.15'],
-    '3': 
-        ['Example(s): Mercury, Ganymede',
+    ['Example(s): Luna, Europa',
+        'Surface Gravity (Gs): 0.15'], 
+    ['Example(s): Mercury, Ganymede',
         'Surface Gravity (Gs): 0.25'],
-    '4': 
-        ['Surface Gravity (Gs): 0.35'],
-    '5': 
-        ['Example(s): Mars',
+    ['Surface Gravity (Gs): 0.35'],
+    ['Example(s): Mars',
         'Surface Gravity (Gs): 0.45'],
-    '6': 
-        ['Surface Gravity (Gs): 0.7'],
-    '7': 
-        ['Surface Gravity (Gs): 0.9'],
-    '8': 
-        ['Example(s): Earth',
+    ['Surface Gravity (Gs): 0.7'],
+    ['Surface Gravity (Gs): 0.9'],
+    ['Example(s): Earth',
         'Surface Gravity (Gs): 1.0'],
-    '9': 
-        ['Surface Gravity (Gs): 1.25'],
-    'A': 
-        ['Surface Gravity (Gs): 1.4'],
-    
-}
+    ['Surface Gravity (Gs): 1.25'],
+    ['Surface Gravity (Gs): 1.4'],
+]
 
 
 def atmosphere_variables(comp, examples, pressure, survival):
@@ -240,31 +229,6 @@ law = [
     ('All bladed weapons, stunners', 'All visible armour'),
 ]
 
-
-
-
-"""
-"""
 if __name__ == '__main__':
     import doctest
     doctest.testmod()
-
-"""
-Hydrographics
-Hydrographic
-Percentage Description
-0 0%-5% Desert world
-1 6%-15% Dry world
-2 16%-25% A few small seas.
-3 26%-35% Small seas and
-oceans.
-4 36%-45% Wet world
-5 46%-55% Large oceans
-6 56%-65%
-7 66%-75% Earth-like world
-8 76%-85% Water world
-9 86%-95% Only a few small
-islands and
-archipelagos.
-10 (A) 96-100% Almost entirely water.
-"""
