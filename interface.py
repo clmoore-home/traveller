@@ -40,24 +40,23 @@ class Application(tk.Tk):
     def __init__(self, *args, **kwargs):
         super().__init__()
         self.title("Planet Decoder")
-        self.minsize(300, 500)
+        self.minsize(300, 700)
         self.make_widgets()
 
     def make_widgets(self):
-        # self.code_entry_frame, self.entry = self.default_entry_box(label='Enter Planet Code:')
+        self.planet_name_frame, self.planet_name_entry = self.default_frame(label='Planet Name:', WidgetName='Entry')
+        self.planet_name_frame.grid(row=1, column=3, columnspan=2, pady=20)
+        self.save_btn = self.base_widget(frame=self.planet_name_frame, text='Save', WidgetName='Button')
+        self.save_btn.pack(side=tk.LEFT, padx=5, pady=5)
         self.code_entry_frame, self.entry = self.default_frame(label='Enter Planet Code:', WidgetName='Entry')
-        self.code_entry_frame.grid(row=1, column=1, columnspan=5)
+        self.decode_buttons()
+        self.code_entry_frame.grid(row=1, column=1, columnspan=2, pady=20)
         self.entry.bind('<Key-Return>', self.handle_decode_request)
-        decode_frame = self.button_frame()
-        decode_frame.grid(row=2, column=1, columnspan=5)
         self.geoframe, self.geography_text = self.default_frame(label='Geography', WidgetName='ScrolledText')
         self.geoframe.grid(row=3, column=1, columnspan=2)
         self.socframe, self.society_text = self.default_frame(label='Society', WidgetName='ScrolledText')
         self.socframe.grid(row=3, column=3, columnspan=2)
-        self.planet_name_frame, self.planet_name_entry = self.default_frame(label='Planet Name', WidgetName='Entry')
-        self.planet_name_frame.grid(row=1, column=1, columnspan=2)
-        # self.save_btn_frame, self.save_btn = self.default_frame(text='Save', WidgetName='Button')
-        # self.save_btn_frame.grid(row=1, column=5)
+        
 
     def default_frame(self, *, frame=None, label=None, text=None, WidgetName=None):
         if not frame:
@@ -65,9 +64,9 @@ class Application(tk.Tk):
         if label:
             tk.Label(text=label, master=frame).pack()
         if WidgetName:
-            pack_object = self.base_widget(frame, WidgetName, text=text)
-            pack_object.pack()
-        return frame, pack_object
+            WidgetName = self.base_widget(frame, WidgetName, text=text)
+            WidgetName.pack()
+        return frame, WidgetName
     
     def base_widget(self, frame, WidgetName, text=None):
         """Function to create a widget from input"""
@@ -76,15 +75,13 @@ class Application(tk.Tk):
         except AttributeError:
             return getattr(tkst, WidgetName)(master=frame, text=text)
 
-    def button_frame(self):
-        btn_frame = tk.Frame()
-        decode = self.base_widget(btn_frame, 'Button', 'Decode')
+    def decode_buttons(self):
+        decode = self.base_widget(self.code_entry_frame, 'Button', 'Decode')
         decode.pack(side=tk.LEFT, padx=5, pady=5)
-        clear = self.base_widget(btn_frame, 'Button', 'Clear')
+        clear = self.base_widget(self.code_entry_frame, 'Button', 'Clear')
         clear.pack(padx=5, pady=5)
         decode.bind('<Button-1>', self.handle_decode_request)
         clear.bind('<Button-1>', self.handle_clear_request)
-        return btn_frame
 
     def insert_information_block(self, text_box, *info_block):
         """Inserts a block of information into the text_display based on info tuple"""
@@ -103,6 +100,7 @@ class Application(tk.Tk):
 
     def handle_decode_request(self, event):
         self.set_textbox_states(self.geography_text, self.society_text, clear=True)
+        self.validate_decode_input()
         p = Planet(self.entry.get())
         self.insert_information_block(self.geography_text, f'Starport Rating {p.starport_rating}', p.starport_info)
         self.insert_information_block(self.geography_text, f'Size Rating {p.size}', p.planet_size_info)
@@ -118,10 +116,10 @@ class Application(tk.Tk):
         self.set_textbox_states(self.geography_text, self.society_text, state='disabled')
         
     def validate_decode_input(self):
-        if len(self.entry.get()) != 10:
-            self.text_display['fg'] = 'red'
-            self.text_display.insert(tk.END, f'Warning: Code entered should be 10 \ncharacters long. Check for entry error.')
-            self.text_display.config(state='disabled')
+        if not 9 < len(self.entry.get()) < 12:
+            self.set_textbox_states(self.geography_text, self.society_text, fg='red', clear=True)
+            self.geography_text.insert(tk.END, f'Warning: Code entered should be 10-11 \ncharacters long. Check for entry error.')
+            self.set_textbox_states(self.geography_text, self.society_text, state='disabled', fg='red')
 
     def handle_clear_request(self, event):
         self.entry.delete(0, tk.END)
