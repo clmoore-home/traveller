@@ -116,6 +116,8 @@ class Application(tk.Tk):
         self.set_textbox_states(self.geography_text, self.society_text, clear=True)
         self.validate_decode_input()
         p = Planet(self.entry.get())
+        # Extract display processing to a separate object that handle_decode_request calls
+        # Application just needs to know who to ask for the information it wants
         self.insert_information_block(self.geography_text, f'Starport Rating {p.starport_rating}', p.starport_info)
         self.insert_information_block(self.geography_text, f'Size Rating {p.size}', p.planet_size_info)
         self.insert_information_block(self.geography_text, f'Atmospheric Rating {p.atmosphere}', p.atmosphere_info)
@@ -130,7 +132,7 @@ class Application(tk.Tk):
             f'Permitted Armour:', p.lawlevel_info_armour.allowed)
         self.insert_information_block(self.society_text, f'Technology Level: {p.techlevel}')
         self.set_textbox_states(self.geography_text, self.society_text, state='disabled')
-        
+
     def validate_decode_input(self):
         if not 9 < len(self.entry.get()) < 13:
             self.set_textbox_states(self.geography_text, self.society_text, fg='red', clear=True)

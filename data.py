@@ -56,6 +56,24 @@ size = [
 ]
 
 
+# Refactor as a dataclass
+# __str__ to get the string display for the view
+# classmethod that receives the first atmosphere description (in the same way planet will work)
+# constructors that can work out the atmosphere based on a single input eg Atmosphere.from_example('Moon')
+
+@dataclass
+class Atmosphere:
+    """
+    Class to store atmospheric information and return based on single input
+
+    >>> Atmosphere.from_description('Trace')
+    'Composition: Trace\nExample(s): Moon\nPressure: 0.00\nSurvival Gear: Vacc Suit'
+
+    >>> Atmosphere.from_example('Moon')
+    'Composition: Trace\nExample(s): Moon\nPressure: 0.00\nSurvival Gear: Vacc Suit'
+
+    """
+
 def atmosphere_variables(comp, examples, pressure, survival):
     return [f'Composition: {comp}', f'Example(s): {examples}', 
         f'Pressure: {pressure}', f'Survival Gear: {survival}']
