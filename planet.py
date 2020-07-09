@@ -4,7 +4,11 @@ from dataclasses import dataclass, field
 import data
 import textwrap
 
-# Add a class method that takes the string
+
+class CodeLengthError(Exception):
+    pass
+
+
 @dataclass
 class Planet:
     """A class to hold the decoded planet profile
@@ -18,41 +22,32 @@ class Planet:
 
     """
     code: str
-    # define other attributes here that are filled by the class method
-
-
-    def __post_init__(self):
-        # validation of components happens here?
-        self.starport_rating = self.code[0]
-        self.size = self.code[1]
-        self.atmosphere = self.code[2]
-        self.waterpercent = self.code[3]
-        self.population = self.code[4]
-        self.govtype = self.code[5]
-        self.lawlevel = self.code[6]
-        self.techlevel = self.code[7:]
-
-    # Can be removed after refactor
-    def __repr__(self):
-        return (f'{self.__class__.__name__}'
-                f'(code="{self.code}",' 
-                f'starport_rating="{self.starport_rating}",'
-                f'size="{self.size}",'
-                f'atmosphere="{self.atmosphere}",'
-                f'waterpercent="{str(self.waterpercent)}",'
-                f'population="{self.population}",'
-                f'govtype="{self.govtype}",'
-                f'lawlevel="{self.lawlevel}",'
-                f'techlevel="{self.techlevel}"'
-                ')')
-
+    starport_rating: str
+    size: str
+    atmosphere: str
+    waterpercent: str
+    population: str
+    govtype: str
+    lawlevel: str
+    techlevel: str
+    
     @classmethod
     def decode(cls, code):
         """Breaks up the code string, pass the parsed values into """
         # (static parse method to call) validation on string length happens here - raise exception
         # (static validate method to call)
-        return Planet(code='string', starport_rating='sr' etc)
-
+        try:
+            code = cls.parse_code(code)
+            return Planet(code, *code[:7], techlevel=code[8])
+        except CodeLengthError:
+            raise
+        
+    @staticmethod
+    def parse_code(code):
+        if len(code) != 9:
+            raise CodeLengthError(f'{code} is {len(code)}, needs to be 9')
+        return code
+    
     def numerical_codepoint(self, codepoint):
         codepoint_map = {'A': '10', 'B': '11', 'C': '12', 'D': '13', 'E': '14', 'F': '15'}
         try:
@@ -62,18 +57,33 @@ class Planet:
     
     @property
     def starport_info(self):
-        if self.starport_rating == 'X':
-            return 'No Starport'
-        return '\n'.join([f'{k}: {v}' for k, v in 
-            data.starport_facilities[self.starport_rating].items()])
+        """Return the dictionary of starport information"""
+        # Is it enough that if the data doesn't recognise the key then none is returned? Should the star port value be validated instead?
+        return data.starport_facilities.get(self.starport_rating)
+
+
+    # @property
+    # def starport_info(self):
+    #     if self.starport_rating == 'X':
+    #         return 'No Starport'
+    #     return '\n'.join([f'{k}: {v}' for k, v in 
+    #         data.starport_facilities[self.starport_rating].items()])
     
+    # @property
+    # def planet_size_info(self):
+    #     size = self.numerical_codepoint(self.size)
+    #     size_info = '\n'.join(data.size[size])
+    #     diameter = size * 1600
+    #     return f'Diameter: {str(diameter)}km\n{size_info}'
+
     @property
-    def planet_size_info(self):
+    def size_info(self):
         size = self.numerical_codepoint(self.size)
-        size_info = '\n'.join(data.size[size])
-        diameter = size * 1600
-        return f'Diameter: {str(diameter)}km\n{size_info}'
-    
+        size_data = data.size[size]
+        size_data['Diameter'] = f'{str(size * 1600)}km'
+        return size_data
+
+
     @property
     def atmosphere_info(self):
         return '\n'.join(data.atmosphere[self.numerical_codepoint(self.atmosphere)])

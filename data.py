@@ -1,4 +1,4 @@
-from collections import namedtuple
+from dataclasses import dataclass
 
 import textwrap
 
@@ -45,16 +45,22 @@ size = [
     ['Example(s): Mercury, Ganymede',
         'Surface Gravity (Gs): 0.25'],
     ['Surface Gravity (Gs): 0.35'],
-    ['Example(s): Mars',
-        'Surface Gravity (Gs): 0.45'],
-    ['Surface Gravity (Gs): 0.7'],
+    {'Example(s)': 'Mars',
+        'Surface Gravity': '0.45Gs'},
+    {'Surface Gravity': '0.7'},
     ['Surface Gravity (Gs): 0.9'],
     ['Example(s): Earth',
         'Surface Gravity (Gs): 1.0'],
     ['Surface Gravity (Gs): 1.25'],
-    ['Surface Gravity (Gs): 1.4'],
+    {'Surface Gravity': '1.4Gs'},
 ]
 
+"""
+Sequence
+
+0, 0.05, 0.15, 0.25, 0.35, 0.45, 0.7, 0.9, 1, 1.25, 1.4
+
+"""
 
 # Refactor as a dataclass
 # __str__ to get the string display for the view
@@ -66,61 +72,71 @@ class Atmosphere:
     """
     Class to store atmospheric information and return based on single input
 
-    >>> Atmosphere.from_description('Trace')
-    'Composition: Trace\nExample(s): Moon\nPressure: 0.00\nSurvival Gear: Vacc Suit'
+    # >>> Atmosphere.from_description('Trace')
+    # 'Composition: Trace\nExample(s): Moon\nPressure: 0.00\nSurvival Gear: Vacc Suit'
 
-    >>> Atmosphere.from_example('Moon')
-    'Composition: Trace\nExample(s): Moon\nPressure: 0.00\nSurvival Gear: Vacc Suit'
+    # >>> Atmosphere.from_example('Moon')
+    # 'Composition: Trace\nExample(s): Moon\nPressure: 0.00\nSurvival Gear: Vacc Suit'
+
+    >>> Atmosphere.from_code(0)
+    Atmosphere(composition='None', examples='Moon', pressure='0.00', survival='Vacc Suit')
 
     """
+    composition: str
+    examples: str
+    pressure: str
+    survival: str
 
-def atmosphere_variables(comp, examples, pressure, survival):
-    return [f'Composition: {comp}', f'Example(s): {examples}', 
-        f'Pressure: {pressure}', f'Survival Gear: {survival}']
+    def __str__(self):
+        return (f"Composition: {composition}\nExample(s): {examples}\n"
+            f"Pressure: {pressure}\nSurvival Gear: {survival}")
+    
+    @classmethod
+    def from_code(cls, code):
+        return Atmosphere(*atmosphere[code])
 
 
 atmosphere = [
-    atmosphere_variables('None', 'Moon', '0.00', 'Vacc Suit'),
-    atmosphere_variables('Trace', 'Mars', '0.0001 to 0.09', 'Vacc Suit'),
-    atmosphere_variables('Very Thin, Tainted', '-', '0.1 to 0.42', 'Respirator, Filter'),
-    atmosphere_variables('Very Thin', '-', '0.1 to 0.42', 'Respirator'),
-    atmosphere_variables('Thin, Tainted', '-', '0.42 to 0.7', 'Filter'),
-    atmosphere_variables('Thin', '-', '0.42 to 0.7', '-'),
-    atmosphere_variables('Standard', 'Earth', '0.71 to 1.49', '-'),
-    atmosphere_variables('Standard, Tainted', '-', '0.71 to 1.49', 'Filter'),
-    atmosphere_variables('Dense', '-', '1.5 to 2.49', '-'),
-    atmosphere_variables('Dense, Tainted', '-', '1.5 to 2.49', 'Filter'),
-    atmosphere_variables('Exotic', '-', 'Varies', 'Air supply'),
-    atmosphere_variables('Corrosive', 'Venus', 'Varies', 'Vacc Suit'),
-    atmosphere_variables('Insidious', '-', 'Varies', 'Vacc Suit'),
-    atmosphere_variables('Very Dense', '-', '2.5+', '-'),
-    atmosphere_variables('Low', '-', '0.5 or less', '-'),
-    atmosphere_variables('Unusual', '-', 'Varies', 'Varies'),
-
+    ('None', 'Moon', '0.00', 'Vacc Suit'),
+    ('Trace', 'Mars', '0.0001 to 0.09', 'Vacc Suit'),
+    ('Very Thin, Tainted', '-', '0.1 to 0.42', 'Respirator, Filter'),
+    ('Very Thin', '-', '0.1 to 0.42', 'Respirator'),
+    ('Thin, Tainted', '-', '0.42 to 0.7', 'Filter'),
+    ('Thin', '-', '0.42 to 0.7', '-'),
+    ('Standard', 'Earth', '0.71 to 1.49', '-'),
+    ('Standard, Tainted', '-', '0.71 to 1.49', 'Filter'),
+    ('Dense', '-', '1.5 to 2.49', '-'),
+    ('Dense, Tainted', '-', '1.5 to 2.49', 'Filter'),
+    ('Exotic', '-', 'Varies', 'Air supply'),
+    ('Corrosive', 'Venus', 'Varies', 'Vacc Suit'),
+    ('Insidious', '-', 'Varies', 'Vacc Suit'),
+    ('Very Dense', '-', '2.5+', '-'),
+    ('Low', '-', '0.5 or less', '-'),
+    ('Unusual', '-', 'Varies', 'Varies'),
 ]
 
 def water_calculation(code):
     """
     >>> water_calculation(1)
-    (6, 15)
+    '6% - 15%'
 
     >>> water_calculation(2)
-    (16, 25)
+    '16% - 25%'
 
     >>> water_calculation(3)
-    (26, 35)
+    '26% - 35%'
 
     >>> water_calculation(4)
-    (36, 45)
+    '36% - 45%'
 
     >>> water_calculation(5)
-    (46, 55)
+    '46% - 55%'
 
     >>> water_calculation(10)
-    (96, 100)
+    '96% - 100%'
 
     >>> water_calculation(0)
-    (0, 5)
+    '0% - 5%'
 
     """
     start = code * 10 - 4

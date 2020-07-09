@@ -134,7 +134,7 @@ class Application(tk.Tk):
         self.set_textbox_states(self.geography_text, self.society_text, state='disabled')
 
     def validate_decode_input(self):
-        if not 9 < len(self.entry.get()) < 13:
+        if not 8 < len(self.entry.get()) < 13:
             self.set_textbox_states(self.geography_text, self.society_text, fg='red', clear=True)
             self.geography_text.insert(tk.END, f'Warning: Code entered should be 10-11 \ncharacters long. Check for entry error.')
             self.set_textbox_states(self.geography_text, self.society_text, state='disabled', fg='red')
