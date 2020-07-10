@@ -8,21 +8,63 @@ import textwrap
 class CodeLengthError(Exception):
     pass
 
-# Recast all names/properties using the Traveller 
+# Create one 'descriptor' class for each property which is instantiated by the WorldProfile when WP receives a request.
+class StarPort:
+    starport_facilities = {
+    'A': {
+        'Quality': 'Excellent',
+        'Berthing Cost': 'Cr1000-Cr6000',
+        'Fuel': 'Refined',
+        'Facilities': 'Shipyard (all); Repair'
+        },
+    'B': {
+        'Quality': 'Good',
+        'Berthing Cost': 'Cr500-Cr3000',
+        'Fuel': 'Refined',
+        'Facilities': 'Shipyard (spacecraft), Repair'
+        },
+    'C': {
+        'Quality': 'Routine',
+        'Berthing Cost': 'Cr100-Cr600',
+        'Fuel': 'Unrefined',
+        'Facilities': 'Shipyard (small craft); Repair'
+        },
+    'D': {
+        'Quality': 'Poor',
+        'Berthing Cost': 'Cr10-Cr60',
+        'Fuel': 'Unrefined',
+        'Facilities': 'Limited repair'
+        },
+    'E': {
+        'Quality': 'Frontier',
+        'Berthing Cost': '0',
+        'Fuel': 'None',
+        'Facilities': 'None'
+        },
+    }
+
+    def __init__(self, code):
+        self.code = code
+
+    def __get__(self, hostinstance, cls):
+        return self.starport_facilities[self.code]
+
+
+# Recast all names/properties using the Traveller nomenclature
 @dataclass
 class WorldProfile:
     """A class to hold the decoded planet profile
-    
-    >>> WorldProfile('C9A74369-12')
-    WorldProfile(code="C9A74369-12",starport_rating="C",size="9",atmosphere="A",waterpercent="7",population="4",govtype="3",lawlevel="6",techlevel="9-12")
+
+    >>> WorldProfile('C9A7436-12')
+    WorldProfile(code="C9A7436-12",starport_rating="C",size="9",atmosphere="A",waterpercent="7",population="4",govtype="3",lawlevel="6",techlevel="12")
 
 
     >>> WorldProfile.decode(code) # self hosting factory method
-    WorldProfile(code="C9A74369-12",starport_rating="C",size="9",atmosphere="A",waterpercent="7",population="4",govtype="3",lawlevel="6",techlevel="9-12")
+    WorldProfile(code="C9A7436-12",starport_rating="C",size="9",atmosphere="A",waterpercent="7",population="4",govtype="3",lawlevel="6",techlevel="12")
 
     """
     code: str
-    starport_rating: str
+    starport_rating: StarPort() # change these to instances of the descriptor classes
     size: str
     atmosphere: str
     waterpercent: str
@@ -35,53 +77,27 @@ class WorldProfile:
     def decode(cls, code):
         """Breaks up the code string, pass the parsed values into """
         # (static parse method to call) validation on string length happens here - raise exception
-        # (static validate method to call)
         code = cls.parse_code(code)
-        return cls(code, *code[:7], techlevel=code[8]) # caveat to using this is during inheritance the 
+        return cls(code, *code[:7], techlevel=code[8]) # caveat to using this is during inheritance the name will change
 
     @staticmethod
     def parse_code(code):
         if len(code) != 9:
             raise CodeLengthError(f'{code} is {len(code)}, needs to be 9')
         return code
-
-    # def numerical_codepoint(self, codepoint):
-        
-        # 
-        # codepoint_map = {'A': '10', 'B': '11', 'C': '12', 'D': '13', 'E': '14', 'F': '15'}
-        # try:
-        #     return int(codepoint_map[codepoint])
-        # except KeyError:
-        #     return int(codepoint)
-    
+# All the properties can be removed once we have the descriptor classes
     @property
-    def starport_info(self):
+    def starport(self):
         """Return the dictionary of starport information"""
         # Is it enough that if the data doesn't recognise the key then none is returned? Should the star port value be validated instead?
         return data.starport_facilities.get(self.starport_rating)
 
-
-    # @property
-    # def starport_info(self):
-    #     if self.starport_rating == 'X':
-    #         return 'No Starport'
-    #     return '\n'.join([f'{k}: {v}' for k, v in 
-    #         data.starport_facilities[self.starport_rating].items()])
-    
-    # @property
-    # def planet_size_info(self):
-    #     size = self.numerical_codepoint(self.size)
-    #     size_info = '\n'.join(data.size[size])
-    #     diameter = size * 1600
-    #     return f'Diameter: {str(diameter)}km\n{size_info}'
-
     @property
-    def size_info(self):
+    def planetary_size(self):
         # size = self.numerical_codepoint(self.size)
         size_data = data.size[int(size, base=16)]
-        size_data['Diameter'] = f'{str(size * 1600)}km'
+        size_data['Diameter'] = f'{str(int(size, base=16) * 1600)}km'
         return size_data
-
 
     @property
     def atmosphere_info(self):

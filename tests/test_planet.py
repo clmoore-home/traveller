@@ -23,17 +23,22 @@ def test_planet_returns_starport_info():
         'Facilities': 'Shipyard (small craft); Repair'
         }
 
-def test_starport_info_handles_x():
+def test_starport_handles_x():
     p = WorldProfile.decode('XA6A643-9')
-    assert p.starport_info == None
+    assert p.starport == None
 
 
 def test_size_info():
     """Testing the method for retrieving size information"""
     p = WorldProfile.decode('CA6A643-9')
-    assert p.size_info == {
+    assert p.planetary_size == {
         'Surface Gravity': '1.4Gs',
         'Diameter': '16000km'}
+
+
+def test_starport_descriptor():
+    starport = p.StarPort('A')
+    assert starport = p.StarPort()
 
 # next what if size gets an out of range value?
 

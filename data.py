@@ -2,38 +2,38 @@ from dataclasses import dataclass
 
 import textwrap
 
-starport_facilities = {
-    'A': {
-        'Quality': 'Excellent',
-        'Berthing Cost': 'Cr1000-Cr6000',
-        'Fuel': 'Refined',
-        'Facilities': 'Shipyard (all); Repair'
-        },
-    'B': {
-        'Quality': 'Good',
-        'Berthing Cost': 'Cr500-Cr3000',
-        'Fuel': 'Refined',
-        'Facilities': 'Shipyard (spacecraft), Repair'
-        },
-    'C': {
-        'Quality': 'Routine',
-        'Berthing Cost': 'Cr100-Cr600',
-        'Fuel': 'Unrefined',
-        'Facilities': 'Shipyard (small craft); Repair'
-        },
-    'D': {
-        'Quality': 'Poor',
-        'Berthing Cost': 'Cr10-Cr60',
-        'Fuel': 'Unrefined',
-        'Facilities': 'Limited repair'
-        },
-    'E': {
-        'Quality': 'Frontier',
-        'Berthing Cost': '0',
-        'Fuel': 'None',
-        'Facilities': 'None'
-        },
-}
+# starport_facilities = {
+#     'A': {
+#         'Quality': 'Excellent',
+#         'Berthing Cost': 'Cr1000-Cr6000',
+#         'Fuel': 'Refined',
+#         'Facilities': 'Shipyard (all); Repair'
+#         },
+#     'B': {
+#         'Quality': 'Good',
+#         'Berthing Cost': 'Cr500-Cr3000',
+#         'Fuel': 'Refined',
+#         'Facilities': 'Shipyard (spacecraft), Repair'
+#         },
+#     'C': {
+#         'Quality': 'Routine',
+#         'Berthing Cost': 'Cr100-Cr600',
+#         'Fuel': 'Unrefined',
+#         'Facilities': 'Shipyard (small craft); Repair'
+#         },
+#     'D': {
+#         'Quality': 'Poor',
+#         'Berthing Cost': 'Cr10-Cr60',
+#         'Fuel': 'Unrefined',
+#         'Facilities': 'Limited repair'
+#         },
+#     'E': {
+#         'Quality': 'Frontier',
+#         'Berthing Cost': '0',
+#         'Fuel': 'None',
+#         'Facilities': 'None'
+#         },
+# }
 
 size = [
     ['Example(s): Asteroid, orbital complex',

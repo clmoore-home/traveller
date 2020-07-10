@@ -118,6 +118,8 @@ class Application(tk.Tk):
         p = Planet(self.entry.get())
         # Extract display processing to a separate object that handle_decode_request calls
         # Application just needs to know who to ask for the information it wants
+        # View sends the request from decode button to the Controller, the Controller reaches into the Model 
+        # (data and planet) to get the data, view displays data according to requirements
         self.insert_information_block(self.geography_text, f'Starport Rating {p.starport_rating}', p.starport_info)
         self.insert_information_block(self.geography_text, f'Size Rating {p.size}', p.planet_size_info)
         self.insert_information_block(self.geography_text, f'Atmospheric Rating {p.atmosphere}', p.atmosphere_info)
