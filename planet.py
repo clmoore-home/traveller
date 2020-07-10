@@ -8,17 +8,17 @@ import textwrap
 class CodeLengthError(Exception):
     pass
 
-
+# Recast all names/properties using the Traveller 
 @dataclass
-class Planet:
+class WorldProfile:
     """A class to hold the decoded planet profile
     
-    >>> Planet('C9A74369-12')
-    Planet(code="C9A74369-12",starport_rating="C",size="9",atmosphere="A",waterpercent="7",population="4",govtype="3",lawlevel="6",techlevel="9-12")
+    >>> WorldProfile('C9A74369-12')
+    WorldProfile(code="C9A74369-12",starport_rating="C",size="9",atmosphere="A",waterpercent="7",population="4",govtype="3",lawlevel="6",techlevel="9-12")
 
 
-    >>> Planet.decode(code) # self hosting factory method
-    Planet(code="C9A74369-12",starport_rating="C",size="9",atmosphere="A",waterpercent="7",population="4",govtype="3",lawlevel="6",techlevel="9-12")
+    >>> WorldProfile.decode(code) # self hosting factory method
+    WorldProfile(code="C9A74369-12",starport_rating="C",size="9",atmosphere="A",waterpercent="7",population="4",govtype="3",lawlevel="6",techlevel="9-12")
 
     """
     code: str
@@ -30,30 +30,29 @@ class Planet:
     govtype: str
     lawlevel: str
     techlevel: str
-    
+
     @classmethod
     def decode(cls, code):
         """Breaks up the code string, pass the parsed values into """
         # (static parse method to call) validation on string length happens here - raise exception
         # (static validate method to call)
-        try:
-            code = cls.parse_code(code)
-            return Planet(code, *code[:7], techlevel=code[8])
-        except CodeLengthError:
-            raise
-        
+        code = cls.parse_code(code)
+        return cls(code, *code[:7], techlevel=code[8]) # caveat to using this is during inheritance the 
+
     @staticmethod
     def parse_code(code):
         if len(code) != 9:
             raise CodeLengthError(f'{code} is {len(code)}, needs to be 9')
         return code
-    
-    def numerical_codepoint(self, codepoint):
-        codepoint_map = {'A': '10', 'B': '11', 'C': '12', 'D': '13', 'E': '14', 'F': '15'}
-        try:
-            return int(codepoint_map[codepoint])
-        except KeyError:
-            return int(codepoint)
+
+    # def numerical_codepoint(self, codepoint):
+        
+        # 
+        # codepoint_map = {'A': '10', 'B': '11', 'C': '12', 'D': '13', 'E': '14', 'F': '15'}
+        # try:
+        #     return int(codepoint_map[codepoint])
+        # except KeyError:
+        #     return int(codepoint)
     
     @property
     def starport_info(self):
@@ -78,8 +77,8 @@ class Planet:
 
     @property
     def size_info(self):
-        size = self.numerical_codepoint(self.size)
-        size_data = data.size[size]
+        # size = self.numerical_codepoint(self.size)
+        size_data = data.size[int(size, base=16)]
         size_data['Diameter'] = f'{str(size * 1600)}km'
         return size_data
 
