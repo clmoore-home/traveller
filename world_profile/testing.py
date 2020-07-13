@@ -1,76 +1,40 @@
-from dataclasses import dataclass
+from functools import partialmethod
 
-class Descriptor:
-
-    # def __init__(self, code):
-    #     self.code = code
-
-    def __get__(self, obj, type=None):
-        return obj.code
-
-
-class DeepThought:
-
-    attribute1 = Descriptor()
-
-    def __init__(self, code):
-        self.code = code
-
-
-# d = DeepThought('hello')
-
-# print(d.attribute1)
+from dataclasses import dataclass, field
 
 class StarPort:
-    starport_facilities = {
-    'A': {
-        'Quality': 'Excellent',
-        'Berthing Cost': 'Cr1000-Cr6000',
-        'Fuel': 'Refined',
-        'Facilities': 'Shipyard (all); Repair'
-        },
-    'B': {
-        'Quality': 'Good',
-        'Berthing Cost': 'Cr500-Cr3000',
-        'Fuel': 'Refined',
-        'Facilities': 'Shipyard (spacecraft), Repair'
-        },
-    'C': {
-        'Quality': 'Routine',
-        'Berthing Cost': 'Cr100-Cr600',
-        'Fuel': 'Unrefined',
-        'Facilities': 'Shipyard (small craft); Repair'
-        },
-    'D': {
-        'Quality': 'Poor',
-        'Berthing Cost': 'Cr10-Cr60',
-        'Fuel': 'Unrefined',
-        'Facilities': 'Limited repair'
-        },
-    'E': {
-        'Quality': 'Frontier',
-        'Berthing Cost': '0',
-        'Fuel': 'None',
-        'Facilities': 'None'
-        },
-    }
+    """A data descriptor to hold star port values.
+    """
+    d = {'10': 'Great'}
 
-    def __get__(self, obj, type=None):
-        return self.starport_facilities[obj.sp]
+    def __get__(self, obj, objtype):
+        return self.d[self.var]
+
+    def __set__(self, obj, val):
+        self.var = val
 
 
 @dataclass
-class WorldProfile:
+class WorldProfile(object):
+    # starport: StarPort()
+    code: str
     starport: StarPort()
 
-    # @classmethod
-    # def decode(cls, code):
-    #     self.sp = code
+    @classmethod
+    def decode(cls, code):
+        return cls(code, code)
+
+
+class WorldProfile2:
+    starport = StarPort()
 
     def __init__(self, code):
-        self.sp = code
+        self.starport = code
 
 
-p = WorldProfile('A')
+m = WorldProfile.decode('10')
+print(m)
+print(m.starport)
 
-print(p.starport)
+n = WorldProfile2('11')
+print(n.starport)
