@@ -2,7 +2,9 @@ import collections
 import tkinter as tk
 import tkinter.scrolledtext as tkst
 
-from planet import Planet
+import world_profile.controller as controller
+
+from world_profile.world_profile import WorldProfile
 
 """
 Previous editions of Traveller and various websites may
@@ -43,9 +45,9 @@ class Application(tk.Tk):
     Planet Code Entry, option button to Decode string or clear the output text boxes
     Geography text box to display the geographical features of the planet
     Society text box to display information about the society and culture.
-    
+
     Validation on code entry will display a warning message if the code entered is too short or long
-    
+
     Enhancements:
     - Add check boxes for Naval Base, Scout Base etc to include information about those in output
     - Create various images of planets and display one based on geographical input (water, size, etc)
@@ -69,7 +71,7 @@ class Application(tk.Tk):
         self.geoframe.grid(row=3, column=1, columnspan=2)
         self.socframe, self.society_text = self.default_frame(label='Society', WidgetName='ScrolledText')
         self.socframe.grid(row=3, column=3, columnspan=2)
-        
+
     def default_frame(self, *, frame=None, label=None, text=None, WidgetName=None):
         """Sets up a frame with an optional basic Widget packed in"""
         if not frame:
@@ -80,7 +82,7 @@ class Application(tk.Tk):
             WidgetName = self.base_widget(frame, WidgetName, text=text)
             WidgetName.pack()
         return frame, WidgetName
-    
+
     def base_widget(self, frame, WidgetName, text=None):
         """Create a basic widget from input"""
         try:
@@ -102,6 +104,11 @@ class Application(tk.Tk):
         text_box.insert(tk.END, '\n'.join(info_block))
         text_box.insert(tk.END, '\n\n')
 
+    @staticmethod
+    def format_information_block(info_block):
+        """Turns a dictionary into a \n delimited string"""
+        return '\n'.join([f'{k}: {v}' for k, v in info_block.items()])
+
     def set_textbox_states(self, *text_boxes, state='normal', fg='black', clear=False):
         """Sets the input textboxes to input states"""
         for tb in text_boxes:
@@ -114,32 +121,40 @@ class Application(tk.Tk):
 
     def handle_decode_request(self, event):
         self.set_textbox_states(self.geography_text, self.society_text, clear=True)
-        self.validate_decode_input()
-        p = Planet(self.entry.get())
-        # Extract display processing to a separate object that handle_decode_request calls
-        # Application just needs to know who to ask for the information it wants
-        # View sends the request from decode button to the Controller, the Controller reaches into the Model 
-        # (data and planet) to get the data, view displays data according to requirements
-        self.insert_information_block(self.geography_text, f'Starport Rating {p.starport_rating}', p.starport_info)
-        self.insert_information_block(self.geography_text, f'Size Rating {p.size}', p.planet_size_info)
-        self.insert_information_block(self.geography_text, f'Atmospheric Rating {p.atmosphere}', p.atmosphere_info)
-        self.insert_information_block(self.geography_text, f'Hydrographics Rating {p.waterpercent}', p.hydrographic_info)
-        self.insert_information_block(self.geography_text, f'Population: {p.population_info}')
-        self.insert_information_block(self.society_text, f'Goverment Rating {p.govtype}', p.government_info)
-        self.insert_information_block(self.society_text, f'Law Level: {p.lawlevel}', 
-            'Restricted Weapons:', p.lawlevel_info_weapons.restricted, 
-            'Permitted Weapons:', p.lawlevel_info_weapons.allowed)
-        self.insert_information_block(self.society_text,
-            f'Restricted Armour:', p.lawlevel_info_armour.restricted, 
-            f'Permitted Armour:', p.lawlevel_info_armour.allowed)
-        self.insert_information_block(self.society_text, f'Technology Level: {p.techlevel}')
+        plantary_profile = controller.process_decode_request(self.entry.get())
+        starport = controller.get_starport(plantary_profile)
+        self.insert_information_block(self.geography_text, f'Starport Rating', self.format_information_block(starport))
         self.set_textbox_states(self.geography_text, self.society_text, state='disabled')
 
-    def validate_decode_input(self):
-        if not 8 < len(self.entry.get()) < 13:
-            self.set_textbox_states(self.geography_text, self.society_text, fg='red', clear=True)
-            self.geography_text.insert(tk.END, f'Warning: Code entered should be 10-11 \ncharacters long. Check for entry error.')
-            self.set_textbox_states(self.geography_text, self.society_text, state='disabled', fg='red')
+
+    # def handle_decode_request(self, event):
+    #     self.set_textbox_states(self.geography_text, self.society_text, clear=True)
+    #     self.validate_decode_input()
+    #     p = Planet(self.entry.get())
+    #     # Extract display processing to a separate object that handle_decode_request calls
+    #     # Application just needs to know who to ask for the information it wants
+    #     # View sends the request from decode button to the Controller, the Controller reaches into the Model
+    #     # (data and planet) to get the data, view displays data according to requirements
+    #     self.insert_information_block(self.geography_text, f'Starport Rating {p.starport_rating}', p.starport_info)
+    #     self.insert_information_block(self.geography_text, f'Size Rating {p.size}', p.planet_size_info)
+    #     self.insert_information_block(self.geography_text, f'Atmospheric Rating {p.atmosphere}', p.atmosphere_info)
+    #     self.insert_information_block(self.geography_text, f'Hydrographics Rating {p.waterpercent}', p.hydrographic_info)
+    #     self.insert_information_block(self.geography_text, f'Population: {p.population_info}')
+    #     self.insert_information_block(self.society_text, f'Goverment Rating {p.govtype}', p.government_info)
+    #     self.insert_information_block(self.society_text, f'Law Level: {p.lawlevel}',
+    #         'Restricted Weapons:', p.lawlevel_info_weapons.restricted,
+    #         'Permitted Weapons:', p.lawlevel_info_weapons.allowed)
+    #     self.insert_information_block(self.society_text,
+    #         f'Restricted Armour:', p.lawlevel_info_armour.restricted,
+    #         f'Permitted Armour:', p.lawlevel_info_armour.allowed)
+    #     self.insert_information_block(self.society_text, f'Technology Level: {p.techlevel}')
+    #     self.set_textbox_states(self.geography_text, self.society_text, state='disabled')
+
+    # def validate_decode_input(self):
+    #     if not 8 < len(self.entry.get()) < 13:
+    #         self.set_textbox_states(self.geography_text, self.society_text, fg='red', clear=True)
+    #         self.geography_text.insert(tk.END, f'Warning: Code entered should be 10-11 \ncharacters long. Check for entry error.')
+    #         self.set_textbox_states(self.geography_text, self.society_text, state='disabled', fg='red')
 
     def handle_clear_request(self, event):
         self.entry.delete(0, tk.END)

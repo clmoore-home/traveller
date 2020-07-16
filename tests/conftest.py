@@ -1,3 +1,3 @@
 import sys
 
-sys.path.append('../planet_decoder')
+sys.path.append('../world_profile')

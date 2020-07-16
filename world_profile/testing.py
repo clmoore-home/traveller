@@ -36,5 +36,8 @@ m = WorldProfile.decode('10')
 print(m)
 print(m.starport)
 
-n = WorldProfile2('11')
+n = WorldProfile2('10')
 print(n.starport)
+
+test = {'Hello': 'yes', 'Goodbye': 'not'}
+print('\n'.join([f'{k}: {v}' for k, v in test.items()]))
