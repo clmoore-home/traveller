@@ -5,36 +5,48 @@ from dataclasses import dataclass, field
 class StarPort:
     """A data descriptor to hold star port values.
     """
-    d = {'10': 'Great'}
+    # convert data to use namedtuples
+    starport_facilities = {
+        'A': {
+            'Quality': 'Excellent',
+            'Berthing Cost': 'Cr1000-Cr6000',
+            'Fuel': 'Refined',
+            'Facilities': 'Shipyard (all); Repair'
+            },
+        'B': {
+            'Quality': 'Good',
+            'Berthing Cost': 'Cr500-Cr3000',
+            'Fuel': 'Refined',
+            'Facilities': 'Shipyard (spacecraft), Repair'
+            },
+        'C': {
+            'Quality': 'Routine',
+            'Berthing Cost': 'Cr100-Cr600',
+            'Fuel': 'Unrefined',
+            'Facilities': 'Shipyard (small craft); Repair'
+            }}
+
+    def __set_name__(self, owner, name):
+        self.name = name
 
     def __get__(self, obj, objtype):
-        return self.d[self.var]
+        value = obj.__dict__[self.name]
+        # return obj.__dict__.get(self.name)
+        return self.starport_facilities[value]
 
-    def __set__(self, obj, val):
-        self.var = val
-
-
-@dataclass
-class WorldProfile(object):
-    # starport: StarPort()
-    code: str
-    starport: StarPort()
-
-    @classmethod
-    def decode(cls, code):
-        return cls(code, code)
+    def __set__(self, obj, value):
+        obj.__dict__[self.name] = self.starport_facilities[value]
+        obj.__dict__.update({'Starport Rating':})
+        # obj.__dict__[self.name] = value
 
 
-class WorldProfile2:
+class WorldProfile:
     starport = StarPort()
 
     def __init__(self, code):
         self.starport = code
 
 
-m = WorldProfile.decode('10')
-print(m)
-print(m.starport)
-
-n = WorldProfile2('11')
+n = WorldProfile('A')
 print(n.starport)
+print(n.__dict__)
