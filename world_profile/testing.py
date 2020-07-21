@@ -31,13 +31,14 @@ class StarPort:
 
     def __get__(self, obj, objtype):
         value = obj.__dict__[self.name]
-        # return obj.__dict__.get(self.name)
-        return self.starport_facilities[value]
+        starport_facilities = {'Starport Rating': value}
+        starport_facilities.update(self.starport_facilities[value])
+        return starport_facilities
 
     def __set__(self, obj, value):
-        obj.__dict__[self.name] = self.starport_facilities[value]
-        obj.__dict__.update({'Starport Rating':})
-        # obj.__dict__[self.name] = value
+        """Set the starport rating on the starport attribute
+        to be accessible by the __get__"""
+        obj.__dict__[self.name] = value
 
 
 class WorldProfile:
@@ -49,4 +50,3 @@ class WorldProfile:
 
 n = WorldProfile('A')
 print(n.starport)
-print(n.__dict__)
