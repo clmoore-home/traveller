@@ -5,9 +5,6 @@ import world_profile.data as data
 import textwrap
 
 
-class CodeLengthError(Exception):
-    pass
-
 # Create one class for each property which is instantiated by the WorldProfile when WP receives a request.
 @dataclass
 class StarPort:
@@ -49,6 +46,7 @@ class StarPort:
 
     def __post_init__(self):
         self.rating = self.rating.upper()
+        return self.starport_class.get(self.rating)
 
     @property
     def facilities(self):
@@ -89,38 +87,19 @@ class Size:
 @dataclass
 class WorldProfile:
     code: str
-    starport_rating: str
+    starport: None
+    size: None
 
     @classmethod
     def from_code(cls, code):
-        return cls(code, code[0])
-
-    @property
-    def starport(self):
-        sp = StarPort(self.starport_rating)
-        return sp.facilities
+        return cls(code, StarPort(code[0]), Size(code[1]))
 
 
-# Dan's implementation
-@dataclass
-class DanWorldProfile:
-    code: str
-    starport: StarPort
-    _starport: StarPort = field(init=False, repr=False)
 
-    @classmethod
-    def from_code(cls, code):
-        return cls(code, code[0])
-
-    @property
-    def starport(self):
-        return self._starport.facilities
-
-    @starport.setter
-    def starport(self, new_code):
-        new_sp = StarPort(new_code.upper())
-        self._starport = new_sp
-
+profile = WorldProfile.from_code('C938264-12')
+print(profile)
+print(profile.starport.facilities)
+print(profile.size.characteristic)
 
 # Recast all names/properties using the Traveller nomenclature
 # @dataclass
