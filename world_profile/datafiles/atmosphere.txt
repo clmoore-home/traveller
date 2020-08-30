@@ -1,0 +1,16 @@
+1	None	Moon	0.00	Vacc Suit
+2	Trace	Mars	0.0001 to 0.09	Vacc Suit
+3	Very Thin, Tainted	-	0.1 to 0.42	Respirator, Filter
+4	Very Thin	-	0.1 to 0.42	Respirator
+5	Thin, Tainted	-	0.42 to 0.7	Filter
+6	Thin	-	0.42 to 0.7	-
+7	Standard	Earth	0.71 to 1.49	-
+8	Standard, Tainted	-	0.71 to 1.49	Filter
+9	Dense	-	1.5 to 2.49	-
+10	Dense, Tainted	-	1.5 to 2.49	Filter
+11	Exotic	-	Varies	Air supply
+12	Corrosive	Venus	Varies	Vacc Suit
+13	Insidious	-	Varies	Vacc Suit
+14	Very Dense	-	2.5+	-
+15	Low	-	0.5 or less	-
+16	Unusual	-	Varies	Varies

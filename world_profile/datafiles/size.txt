@@ -1,0 +1,11 @@
+1	Asteroid, orbital complex	Negligible
+2	Triton	0.05
+3	Luna, Europa	0.15
+4	Mercury, Ganymede	0.25
+5		0.35
+6	Mars	0.45
+7		0.7
+8		0.9
+9	Earth	1.0
+10		1.25
+11		1.4Gs
