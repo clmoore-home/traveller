@@ -1,0 +1,6 @@
+﻿rating,quality,berthing,fuel,facilities
+A,Excellent,Cr1000-Cr6000,Refined,Shipyard (all); Repair
+B,Good,Cr500-Cr3000,Refined,"Shipyard (spacecraft), Repair"
+C,Routine,Cr100-Cr600,Unrefined,Shipyard (small craft); Repair
+D,Poor,Cr10-Cr60,Unrefined,Limited repair
+E,Frontier,0,None,None
