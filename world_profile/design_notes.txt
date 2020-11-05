@@ -4,11 +4,19 @@ Design notes for the traveller automated planet decoder.
 A user will be able to enter any planet code from a sector map and retrieve all the information contained in the code about
 tech level, law levels etc. The input is the planet code, plus options for the little pictures and the initial code e.g. A-C.
 
-This app will use a GUI interface - tkinter.
+This app will be MVC (model view controller style). The model is a database containing tables for each of the code components, and
+a set of classes for making pulling the correct data out of the code.
 
-Refactoring Notes:
-- Convert the app to MVC organisation - the model (planet and data), view (interface), and controller.
-- Convert naming to follow the traveller nomenclature
-- Convert the planetary aspects to descriptor classes.
+Version one of the app will be:
+View: Flash and HTML/CSS/Bootstrap
+Controller: Python classes (one controller per class model, eg a world profile controller)
+Model: Sqlite database and python classes for organising the data.
+
+
+Future versions:
+Installable app using Tkinter or similar GUI
+Android versions
+Using Postgres instead of sqlite (to prepare for user accounts, saving data, making modifications)
+User account based app that allows for per-user modifications (these would need to be shareable across multiple accounts)
 
 """
